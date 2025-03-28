@@ -129,7 +129,8 @@ public class c6_CombiningPublishers extends CombiningPublishersBase {
     @Test
     public void need_for_speed() {
         //todo: feel free to change code as you need
-        Flux<String> stonks = getStocksGrpc().timeout(Duration.ofMillis(500)).onErrorResume(e -> getStocksRest());
+        Flux<String> stonks = getStocksGrpc().timeout(Duration.ofMillis(500))
+                .onErrorResume(e -> getStocksRest());
 
         //don't change below this line
         StepVerifier.create(stonks).expectNextCount(5).verifyComplete();
@@ -170,7 +171,8 @@ public class c6_CombiningPublishers extends CombiningPublishersBase {
                 });
 
         //don't change below this line
-        StepVerifier.create(myMail).expectNextMatches(m -> !m.metaData.equals("spam")).expectNextMatches(m -> !m.metaData.equals("spam")).verifyComplete();
+        StepVerifier.create(myMail).expectNextMatches(m -> !m.metaData.equals("spam"))
+                .expectNextMatches(m -> !m.metaData.equals("spam")).verifyComplete();
 
         Assertions.assertEquals(1, consumedSpamCounter.get());
     }
@@ -202,7 +204,8 @@ public class c6_CombiningPublishers extends CombiningPublishersBase {
     public void prettify() {
         //todo: feel free to change code as you need
         //todo: use when,and,then...
-        Mono<Boolean> successful = openFile().then(writeToFile("0x3522285912341")).then(closeFile()).thenReturn(true);
+        Mono<Boolean> successful = openFile().then(writeToFile("0x3522285912341"))
+                .then(closeFile()).thenReturn(true);
 
         //don't change below this line
         StepVerifier.create(successful).expectNext(true).verifyComplete();
@@ -218,7 +221,8 @@ public class c6_CombiningPublishers extends CombiningPublishersBase {
     @Test
     public void one_to_n() {
         //todo: feel free to change code as you need
-        Flux<String> fileLines = openFile().thenMany(readFile()).doOnNext(line -> System.out.println("Reading line: " + line));
+        Flux<String> fileLines = openFile().thenMany(readFile())
+                .doOnNext(line -> System.out.println("Reading line: " + line));
 
         StepVerifier.create(fileLines).expectNext("0x1", "0x2", "0x3").verifyComplete();
     }
@@ -230,10 +234,11 @@ public class c6_CombiningPublishers extends CombiningPublishersBase {
     @Test
     public void acid_durability() {
         //todo: feel free to change code as you need
-        Flux<String> committedTasksIds = tasksToExecute().concatMap(mono -> mono).doOnNext(taskId -> {
-            commitTask(taskId);
-            System.out.println("Committed Task ID: " + taskId);
-        });
+        Flux<String> committedTasksIds = tasksToExecute()
+                .concatMap(mono -> mono).doOnNext(taskId -> {
+                    commitTask(taskId);
+                    System.out.println("Committed Task ID: " + taskId);
+                });
 
         //don't change below this line
         StepVerifier.create(committedTasksIds).expectNext("task#1", "task#2", "task#3").verifyComplete();
@@ -252,7 +257,8 @@ public class c6_CombiningPublishers extends CombiningPublishersBase {
         Flux<String> microsoftBlizzardCorp = Flux.merge(microsoftTitles(), blizzardTitles());
 
         //don't change below this line
-        StepVerifier.create(microsoftBlizzardCorp).expectNext("windows12", "wow2", "bing2", "overwatch3", "office366", "warcraft4").verifyComplete();
+        StepVerifier.create(microsoftBlizzardCorp)
+                .expectNext("windows12", "wow2", "bing2", "overwatch3", "office366", "warcraft4").verifyComplete();
     }
 
 
@@ -269,7 +275,10 @@ public class c6_CombiningPublishers extends CombiningPublishersBase {
         Flux<Car> producedCars = Flux.zip(carChassisProducer(), carEngineProducer(), Car::new);
 
         //don't change below this line
-        StepVerifier.create(producedCars).recordWith(ConcurrentLinkedDeque::new).expectNextCount(3).expectRecordedMatches(cars -> cars.stream().allMatch(car -> Objects.equals(car.chassis.getSeqNum(), car.engine.getSeqNum()))).verifyComplete();
+        StepVerifier.create(producedCars).recordWith(ConcurrentLinkedDeque::new)
+                .expectNextCount(3).expectRecordedMatches(cars -> cars.stream()
+                        .allMatch(car -> Objects.equals(car.chassis.getSeqNum(),
+                                car.engine.getSeqNum()))).verifyComplete();
     }
 
     /**
@@ -316,9 +325,9 @@ public class c6_CombiningPublishers extends CombiningPublishersBase {
 
         //todo: feel free to change code as you need
         Flux<String> stream = Flux.usingWhen(
-                StreamingConnection.startStreaming(), // Resource supplier -> returns the Flux from the stream
-                n -> n, // Resource closure -> no modification, just pass through the Flux
-                tr -> StreamingConnection.closeConnection() // Async cleanup action to close the connection after stream completes
+                StreamingConnection.startStreaming(),
+                n -> n,
+                tr -> StreamingConnection.closeConnection()
         );
 
         //don't change below this line

@@ -159,7 +159,6 @@ public class c1_Introduction extends IntroductionBase {
                         },
                         () -> serviceCallCompleted.set(true)
                 );
-
         Thread.sleep(1000);
 
         assertTrue(serviceCallCompleted.get());

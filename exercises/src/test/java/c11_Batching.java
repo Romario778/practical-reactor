@@ -7,14 +7,14 @@ import java.time.Duration;
 /**
  * Another way of controlling amount of data flowing is batching.
  * Reactor provides three batching strategies: grouping, windowing, and buffering.
- *
+ * <p>
  * Read first:
- *
+ * <p>
  * https://projectreactor.io/docs/core/release/reference/#advanced-three-sorts-batching
  * https://projectreactor.io/docs/core/release/reference/#which.window
- *
+ * <p>
  * Useful documentation:
- *
+ * <p>
  * https://projectreactor.io/docs/core/release/reference/#which-operator
  * https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html
  * https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html
@@ -29,13 +29,13 @@ public class c11_Batching extends BatchingBase {
     @Test
     public void batch_writer() {
         //todo do your changes here
-        Flux<Void> dataStream = null;
-        dataStream();
-        writeToDisk(null);
+        Flux<Void> dataStream = dataStream()
+                .buffer(10)
+                .flatMap(this::writeToDisk);
 
         //do not change the code below
         StepVerifier.create(dataStream)
-                    .verifyComplete();
+                .verifyComplete();
 
         Assertions.assertEquals(10, diskCounter.get());
     }
@@ -50,9 +50,11 @@ public class c11_Batching extends BatchingBase {
     @Test
     public void command_gateway() {
         //todo: implement your changes here
-        Flux<Void> processCommands = null;
-        inputCommandStream();
-        sendCommand(null);
+        Flux<Void> processCommands = inputCommandStream()
+                .groupBy(command -> command.getAggregateId())
+                .flatMap(groupedFlux -> groupedFlux
+                        .concatMap(command -> sendCommand(command))
+                );
 
         //do not change the code below
         Duration duration = StepVerifier.create(processCommands)
@@ -60,7 +62,6 @@ public class c11_Batching extends BatchingBase {
 
         Assertions.assertTrue(duration.getSeconds() <= 3, "Expected to complete in less than 3 seconds");
     }
-
 
     /**
      * You are implementing time-series database. You need to implement `sum over time` operator. Calculate sum of all
@@ -70,10 +71,12 @@ public class c11_Batching extends BatchingBase {
     public void sum_over_time() {
         Flux<Long> metrics = metrics()
                 //todo: implement your changes here
+                .window(Duration.ofSeconds(1))
+                .flatMap(window -> window.reduce(0L, Long::sum))
                 .take(10);
 
         StepVerifier.create(metrics)
-                    .expectNext(45L, 165L, 255L, 396L, 465L, 627L, 675L, 858L, 885L, 1089L)
-                    .verifyComplete();
+                .expectNext(45L, 165L, 255L, 396L, 465L, 627L, 675L, 858L, 885L, 1089L)
+                .verifyComplete();
     }
 }

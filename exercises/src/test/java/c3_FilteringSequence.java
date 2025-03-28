@@ -6,13 +6,13 @@ import reactor.test.StepVerifier;
 /**
  * Sequence may produce many elements, but we are not always interested in all of them. In this chapter we will learn
  * how to filter elements from a sequence.
- *
+ * <p>
  * Read first:
- *
+ * <p>
  * https://projectreactor.io/docs/core/release/reference/#which.filtering
- *
+ * <p>
  * Useful documentation:
- *
+ * <p>
  * https://projectreactor.io/docs/core/release/reference/#which-operator
  * https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html
  * https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html
@@ -36,7 +36,7 @@ public class c3_FilteringSequence extends FilteringSequenceBase {
 
     /**
      * `mashed_data_service()` returns sequence of generic objects.
-     *  Without using `filter()` operator, collect only objects that are instance of `String`
+     * Without using `filter()` operator, collect only objects that are instance of `String`
      */
     @Test
     public void needle_in_a_haystack() {
@@ -64,7 +64,7 @@ public class c3_FilteringSequence extends FilteringSequenceBase {
     /**
      * This service returns many elements, but you are only interested in the first one.
      * Also, service is very fragile, if you pull more than needed, you may brake it.
-     *
+     * <p>
      * This time no blocking. Use only one operator.
      */
     @Test

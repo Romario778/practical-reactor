@@ -238,7 +238,8 @@ public class c5_CreatingSequence {
     @Test
     public void repeat() {
         AtomicInteger counter = new AtomicInteger(0);
-        Flux<Integer> repeated = Mono.fromCallable(counter::incrementAndGet).repeat(9); //todo: change this line
+        Flux<Integer> repeated = Mono.fromCallable(counter::incrementAndGet)
+                .repeat(9); //todo: change this line
 
         System.out.println("Repeat: ");
         StepVerifier.create(repeated.doOnNext(System.out::println))
@@ -257,7 +258,8 @@ public class c5_CreatingSequence {
     @Test
     public void generate_programmatically() {
 
-        Flux<Integer> generateFlux = Flux.generate(() -> new AtomicInteger(0), (state, sink) -> {
+        Flux<Integer> generateFlux = Flux.generate(() ->
+                new AtomicInteger(0), (state, sink) -> {
             int value = state.getAndIncrement();
             sink.next(value);
             if (value == 5) {
